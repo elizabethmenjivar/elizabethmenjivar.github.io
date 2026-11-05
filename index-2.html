@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Elizabeth Menjivar | Data Analytics Portfolio</title>
+<meta name="description" content="Elizabeth Menjivar, data analytics and AI for innovation student at Bentley University. Regression analysis in R and an interactive housing explorer in Python.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F5F8FC;
+    --ink: #13233F;
+    --muted: #4B5B75;
+    --line: #C9D5E6;
+    --blue: #1F5FD1;
+    --blue-deep: #17489F;
+    --sun: #F2B33D;
+    --head: "Bricolage Grotesque", "Segoe UI", Helvetica, Arial, sans-serif;
+    --body: "IBM Plex Sans", "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 400 1.0625rem/1.65 var(--body); }
+  a { color: var(--blue-deep); text-underline-offset: 3px; }
+  a:hover { color: var(--blue); }
+  :focus-visible { outline: 3px solid var(--sun); outline-offset: 3px; border-radius: 2px; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+
+  header.top { display: flex; justify-content: space-between; align-items: center; padding: 22px 0; flex-wrap: wrap; gap: 12px; }
+  .mark { font: 700 1.1rem var(--head); text-decoration: none; color: var(--ink); }
+  nav a { margin-left: 22px; text-decoration: none; color: var(--muted); font-weight: 500; }
+  nav a:hover { color: var(--blue); text-decoration: underline; }
+
+  .hero { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px; align-items: center; padding: 48px 0 72px; }
+  h1 { font: 700 clamp(2.6rem, 6vw, 4.4rem)/1.02 var(--head); letter-spacing: -0.02em; margin: 0 0 20px; }
+  .lede { font-size: 1.2rem; max-width: 34ch; margin: 0 0 14px; }
+  .sub { color: var(--muted); max-width: 46ch; margin: 0 0 26px; }
+  .btn { display: inline-block; padding: 11px 20px; border-radius: 6px; font-weight: 500; text-decoration: none; margin: 0 10px 10px 0; }
+  .btn.primary { background: var(--blue); color: #fff; }
+  .btn.primary:hover { background: var(--blue-deep); color: #fff; }
+  .btn.ghost { border: 1.5px solid var(--ink); color: var(--ink); }
+  .btn.ghost:hover { background: var(--ink); color: #fff; }
+  .plot { width: 100%; height: auto; }
+
+  section { padding: 56px 0; border-top: 1px solid var(--line); }
+  h2 { font: 700 clamp(1.6rem, 3vw, 2.1rem)/1.15 var(--head); margin: 0 0 32px; letter-spacing: -0.01em; }
+
+  .project { display: grid; grid-template-columns: 250px 1fr; gap: 40px; padding: 8px 0 44px; }
+  .project + .project { padding-top: 40px; border-top: 1px dashed var(--line); }
+  .meta { color: var(--muted); font-size: 0.95rem; }
+  .meta strong { display: block; color: var(--ink); font-weight: 500; margin-top: 12px; }
+  .meta strong:first-child { margin-top: 0; }
+  h3 { font: 700 1.55rem/1.2 var(--head); margin: 0 0 14px; }
+  .project h4 { font: 700 1rem var(--head); margin: 20px 0 4px; }
+  .project p { margin: 0; max-width: 62ch; }
+  .project ul { margin: 6px 0 0; padding-left: 20px; max-width: 62ch; }
+  .project li { margin-bottom: 4px; }
+  .links { margin-top: 22px; display: flex; gap: 20px; flex-wrap: wrap; font-weight: 500; }
+
+  .skills { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 28px; }
+  .skills h3 { font-size: 1.05rem; margin-bottom: 8px; }
+  .skills p { margin: 0; color: var(--muted); }
+
+  .about { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+  .about p { margin: 0 0 14px; max-width: 52ch; }
+  .about h3 { font: 700 1.05rem var(--head); margin: 0 0 8px; }
+  .about .sm { color: var(--muted); font-size: 0.95rem; }
+  footer { padding: 40px 0 56px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.95rem; }
+
+  @media (max-width: 800px) {
+    .hero, .project, .about { grid-template-columns: 1fr; gap: 24px; }
+    .hero { padding-top: 24px; }
+    nav a { margin: 0 18px 0 0; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="mark" href="#top">Elizabeth Menjivar</a>
+    <nav aria-label="Main">
+      <a href="#projects">Projects</a>
+      <a href="#skills">Skills</a>
+      <a href="#about">Background</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <div class="hero">
+      <div>
+        <h1>Elizabeth Menjivar</h1>
+        <p class="sub">I’m a junior at Bentley University majoring in Data Analytics and AI for Innovation, and I’m looking for an internship in data analytics.</p>
+        <a class="btn primary" href="#projects">See my projects</a>
+        <!-- TODO: replace with your resume file, e.g. resume.pdf in this repo -->
+        <a class="btn ghost" href="resume.pdf">Resume</a>
+      </div>
+      <svg class="plot" id="plot" viewBox="0 0 400 320" role="img" aria-label="Decorative scatter plot with a regression line"></svg>
+    </div>
+
+    <section id="projects">
+      <h2>Projects</h2>
+
+      <article class="project">
+        <div class="meta">
+          <strong>Course</strong>MA 252 final project, May 2026
+          <strong>Team</strong>Kayla Waweru and me
+          <strong>My part</strong>Regression modeling, visualizations, interpretation, and the written analysis
+          <strong>Tools</strong>R, tidyverse, ggplot2, car, moderndive
+        </div>
+        <div>
+          <h3>What predicts a college major’s salary?</h3>
+          <h4>The question</h4>
+          <p>Across 172 majors in the FiveThirtyEight recent-grads data, which factors best explain differences in median salary: the share of women in a major, the unemployment rate, or the field of study?</p>
+          <h4>What I did</h4>
+          <ul>
+            <li>Started with a simple regression, then a multiple regression with unemployment rate and major category.</li>
+            <li>Used stepwise selection (AIC) to pick predictors, and compared models with a nested ANOVA.</li>
+            <li>Checked the assumptions with residual plots, a Q-Q plot, Cook’s distance, and VIF.</li>
+          </ul>
+          <h4>What I found</h4>
+          <ul>
+            <li>Major category was the strongest predictor. Engineering stood out at about $20,000 above the baseline category.</li>
+            <li>The share of women stayed significant after adjusting for field. Its effect shrank from about $30,700 to $15,200 per full change in share.</li>
+            <li>Unemployment rate wasn’t significant once the other variables were in. The final model explains about 62% of the variation in median salary.</li>
+          </ul>
+          <div class="links">
+            <!-- TODO: replace each # with your real link -->
+            <a href="#">Read the report (PDF)</a>
+            <a href="#">View the slides</a>
+            <a href="#">Code on GitHub</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="project">
+        <div class="meta">
+          <strong>Course</strong>CS230
+          <strong>Team</strong>Solomiia Rusyn and me
+          <strong>Tools</strong>Python, Streamlit, pandas, Altair, PyDeck
+        </div>
+        <div>
+          <h3>New York Housing Explorer</h3>
+          <h4>The goal</h4>
+          <p>Make the New York housing market dataset easy to explore for someone who doesn’t want to write code.</p>
+          <h4>What it does</h4>
+          <ul>
+            <li>Filters listings by borough and price range, and lets you switch between average and median prices.</li>
+            <li>Compares prices by borough and neighborhood, plots price against property size, and shows each borough’s share of listings.</li>
+            <li>Maps every listing, colored by borough, and calls out the most and least expensive properties.</li>
+          </ul>
+          <div class="links">
+            <a href="#">Code on GitHub</a>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section id="skills">
+      <h2>Skills</h2>
+      <div class="skills">
+        <div><h3>Programming</h3><p>SQL, Python, R, HTML</p></div>
+        <div><h3>Data and analytics</h3><p>Data visualization, regression analysis, pandas, Streamlit</p></div>
+        <div><h3>Tools</h3><p>Power BI, Microsoft Excel</p></div>
+        <div><h3>Communication</h3><p>Written reports and slide decks that explain results in plain language</p></div>
+      </div>
+    </section>
+
+    <section id="about">
+      <h2>Background</h2>
+      <div class="about">
+        <div>
+          <h3>Education</h3>
+          <p>Bentley University, B.S. in Data Analytics and AI for Innovation. Minors in Spanish for Business and Business Administration. Graduating May 2028.</p>
+          <p class="sm">President’s List, GPA 3.67<br>Coursework: Regression Analysis, Introduction to Python, Machine Learning, Database Management Systems</p>
+        </div>
+        <div>
+          <h3>Experience</h3>
+          <p>Small Format Team Member at Target in Stoneham, MA, since August 2022.</p>
+          <p class="sm">I track the movement of 100 to 200 products per shift with handheld devices and inventory systems, and keep stock records accurate across the backroom and sales floor. I also process 30 to 40 guest orders a day for same-day pickup and delivery.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="contact">
+    <p>Want to talk? <a href="mailto:elizabethmenjivar2562@gmail.com">elizabethmenjivar2562@gmail.com</a> &nbsp;|&nbsp; <a href="https://www.linkedin.com/in/elizabeth-menjivar2028">LinkedIn</a> &nbsp;|&nbsp; <a href="https://github.com/elizabethmenjivar">GitHub</a></p>
+  </footer>
+</div>
+
+<script>
+  // Decorative scatter plot with a fitted line (not real data).
+  (function () {
+    var svg = document.getElementById("plot"), s = 7, out = "";
+    function rnd() { s = (s * 9301 + 49297) % 233280; return s / 233280; }
+    out += '<line x1="30" y1="290" x2="380" y2="290" stroke="#C9D5E6" stroke-width="2"/>';
+    out += '<line x1="30" y1="290" x2="30" y2="20" stroke="#C9D5E6" stroke-width="2"/>';
+    for (var i = 0; i < 46; i++) {
+      var x = 50 + rnd() * 310;
+      var y = 260 - (x - 50) * 0.62 + (rnd() - 0.5) * 90;
+      y = Math.max(30, Math.min(280, y));
+      out += '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="5.5" fill="#1F5FD1" fill-opacity="0.75"/>';
+    }
+    out += '<line x1="40" y1="250" x2="372" y2="50" stroke="#F2B33D" stroke-width="5" stroke-linecap="round"/>';
+    svg.innerHTML = out;
+  })();
+</script>
+</body>
+</html>
