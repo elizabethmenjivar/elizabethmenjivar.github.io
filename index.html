@@ -96,7 +96,7 @@
         <a class="btn primary" href="#projects">See my projects</a>
         <a class="btn ghost" href="Elizabeth_Menjivar_Resume.pdf">Resume</a>      
       </div>
-      <svg class="plot" id="plot" viewBox="0 0 400 320" role="img" aria-label="Decorative scatter plot with a regression line"></svg>
+      <svg class="plot" id="plot" viewBox="0 0 400 320" role="img" aria-label=" Scatter plot of college majors showing the relationship between the share of women and median salary, with a fitted regression line"></svg>
     </div>
 
     <section id="projects">
@@ -127,8 +127,8 @@
           </ul>
           <div class="links">
             <a href="MA%20252%20Final.pdf">Read the report (PDF)</a>
-            <a href="College_Major_Salaries_v2.pptx">View the slides</a>
-            <a href="https://github.com/elizabethmenjivar/college-major-salary-analysis">Code on GitHub</a>
+            <a href="College_Major_Salaries_Slides.pdf">View the slides</a>
+            <a href="https://github.com/elizabethmenjivar/elizabethmenjivar.github.io/blob/main/MA%20252%20-%20Final%20Exam.Rmd">Code on GitHub</a>
           </div>
         </div>
       </article>
@@ -150,7 +150,7 @@
             <li>Maps every listing, colored by borough, and calls out the most and least expensive properties.</li>
           </ul>
           <div class="links">
-            <a href="https://github.com/elizabethmenjivar/ny-housing-explorer">Code on GitHub</a>
+            <a href="https://github.com/elizabethmenjivar/elizabethmenjivar.github.io/blob/main/final.py">Code on GitHub</a>
           </div>
         </div>
       </article>
@@ -177,7 +177,7 @@
             <li>8 publishers averaged more than $300 million in revenue per book.</li>
           </ul>
           <div class="links">
-           <a href="https://github.com/elizabethmenjivar/book-publishing-sql-analysis">Code on GitHub</a>
+           <a href="https://github.com/elizabethmenjivar/elizabethmenjivar.github.io/blob/main/assignment5.sql">Code on GitHub</a>
           </div>
         </div>
       </article>
@@ -219,21 +219,111 @@
 </div>
 
 <script>
-  // Decorative scatter plot with a fitted line (not real data).
-  (function () {
-    var svg = document.getElementById("plot"), s = 7, out = "";
-    function rnd() { s = (s * 9301 + 49297) % 233280; return s / 233280; }
-    out += '<line x1="30" y1="290" x2="380" y2="290" stroke="#C9D5E6" stroke-width="2"/>';
-    out += '<line x1="30" y1="290" x2="30" y2="20" stroke="#C9D5E6" stroke-width="2"/>';
-    for (var i = 0; i < 46; i++) {
-      var x = 50 + rnd() * 310;
-      var y = 260 - (x - 50) * 0.62 + (rnd() - 0.5) * 90;
-      y = Math.max(30, Math.min(280, y));
-      out += '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="5.5" fill="#1F5FD1" fill-opacity="0.75"/>';
+ 
+  // Actual data from FiveThirtyEight recent-grads, used in the MA 252 project.
+  (async function () {
+    const svg = document.getElementById('plot');
+    const url = 'https://raw.githubusercontent.com/fivethirtyeight/data/master/college-majors/recent-grads.csv';
+
+    function parseCSV(text) {
+      const rows = [];
+      let row = [], field = '', quoted = false;
+
+      for (let i = 0; i < text.length; i++) {
+        const c = text[i];
+
+        if (c === '"') {
+          if (quoted && text[i + 1] === '"') {
+            field += '"';
+            i++;
+          } else quoted = !quoted;
+        } else if (c === ',' && !quoted) {
+          row.push(field);
+          field = '';
+        } else if ((c === '\n' || c === '\r') && !quoted) {
+          if (c === '\r' && text[i + 1] === '\n') i++;
+          row.push(field);
+          if (row.length > 1) rows.push(row);
+          row = [];
+          field = '';
+        } else field += c;
+      }
+
+      if (field || row.length) {
+        row.push(field);
+        rows.push(row);
+      }
+      return rows;
     }
-    out += '<line x1="40" y1="250" x2="372" y2="50" stroke="#F2B33D" stroke-width="5" stroke-linecap="round"/>';
-    svg.innerHTML = out;
+
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error('Dataset unavailable');
+
+      const rows = parseCSV(await response.text());
+      const header = rows.shift();
+      const ix = header.indexOf('ShareWomen');
+      const iy = header.indexOf('Median');
+
+      if (ix < 0 || iy < 0) throw new Error('Missing data columns');
+
+      const data = rows
+        .map(r => ({ x: Number(r[ix]), y: Number(r[iy]) }))
+        .filter(d =>
+          Number.isFinite(d.x) &&
+          Number.isFinite(d.y) &&
+          d.x >= 0 && d.x <= 1 && d.y > 0
+        );
+
+      if (data.length < 100) throw new Error('Incomplete dataset');
+
+      const n = data.length;
+      const meanX = data.reduce((s, d) => s + d.x, 0) / n;
+      const meanY = data.reduce((s, d) => s + d.y, 0) / n;
+
+      const slope =
+        data.reduce((s, d) => s + (d.x - meanX) * (d.y - meanY), 0) /
+        data.reduce((s, d) => s + (d.x - meanX) ** 2, 0);
+
+      const intercept = meanY - slope * meanX;
+
+      const left = 56, right = 386, top = 18, bottom = 276;
+      const ymax = Math.ceil(Math.max(...data.map(d => d.y)) / 20000) * 20000;
+
+      const px = x => left + x * (right - left);
+      const py = y => bottom - y / ymax * (bottom - top);
+
+      let out = '';
+
+      for (let t = 0; t <= ymax; t += 40000) {
+        const y = py(t);
+        out += `<line x1="${left}" y1="${y}" x2="${right}" y2="${y}" stroke="#DFE6F0" stroke-width="1"/>`;
+        out += `<text x="${left - 7}" y="${y + 4}" text-anchor="end" font-size="10" fill="#4B5B75">${t === 0 ? '0' : (t / 1000) + 'k'}</text>`;
+      }
+
+      for (const x of [0, 0.25, 0.5, 0.75, 1]) {
+        out += `<text x="${px(x)}" y="${bottom + 17}" text-anchor="middle" font-size="10" fill="#4B5B75">${Math.round(x * 100)}%</text>`;
+      }
+
+      out += `<line x1="${left}" y1="${bottom}" x2="${right}" y2="${bottom}" stroke="#C9D5E6" stroke-width="2"/>`;
+      out += `<line x1="${left}" y1="${top}" x2="${left}" y2="${bottom}" stroke="#C9D5E6" stroke-width="2"/>`;
+
+      for (const d of data) {
+        out += `<circle cx="${px(d.x).toFixed(1)}" cy="${py(d.y).toFixed(1)}" r="3.2" fill="#1F5FD1" fill-opacity="0.65"><title>${Math.round(d.x * 100)}% women · $${d.y.toLocaleString()} median salary</title></circle>`;
+      }
+
+      out += `<line x1="${px(0)}" y1="${py(intercept)}" x2="${px(1)}" y2="${py(intercept + slope)}" stroke="#F2B33D" stroke-width="4" stroke-linecap="round"/>`;
+
+      out += `<text x="${(left + right) / 2}" y="315" text-anchor="middle" font-size="11" fill="#4B5B75">Share of women in major</text>`;
+      out += `<text x="12" y="${(top + bottom) / 2}" transform="rotate(-90 12 ${(top + bottom) / 2})" text-anchor="middle" font-size="11" fill="#4B5B75">Median salary ($)</text>`;
+
+      svg.innerHTML = out;
+
+    } catch (error) {
+      svg.innerHTML = '<text x="200" y="150" text-anchor="middle" font-size="13" fill="#4B5B75">Chart data temporarily unavailable</text>';
+    }
   })();
+
 </script>
 </body>
 </html>
