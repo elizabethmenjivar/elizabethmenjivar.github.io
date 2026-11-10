@@ -1,0 +1,91 @@
+---
+title: "Final Project"
+author: "Kayla"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r}
+#uploading the data
+library(tidyverse)
+library(ggplot2)
+library(car)
+library(skimr)
+library(moderndive)
+```
+
+```{r}
+url <- "https://raw.githubusercontent.com/fivethirtyeight/data/master/college-majors/recent-grads.csv"
+
+college_major_data <- read_csv(url)
+
+college_major_data <- na.omit(college_major_data)
+
+view(college_major_data)
+```
+
+```{r}
+#visualizing the data
+college_major_data %>% select(Median) %>% skim()
+
+#histogram of response variable
+ggplot(college_major_data, aes(x=Median)) + 
+  geom_histogram(fill="lightpink", color="black", bins = 30) + 
+  labs(title = "Distribution of Median Salary Across Majors", x="Median Salary", y="Frequency")
+```
+
+```{r}
+ggplot(college_major_data, aes(x=Major_category, y=Median)) +
+  geom_boxplot(fill = "blue", color = "black") +
+  labs(title = "Boxplot of Salary by Major Category",
+       x = "Major Category",
+       y = "Median Salary")
+
+#is this helpful visually?
+```
+
+```{r}
+# Boxplot by Category to identify variations[cite: 9]
+ggplot(college_major_data, aes(x = reorder(Major_category, Median), y = Median)) +
+  geom_boxplot(fill = "steelblue") +
+  coord_flip() +
+  labs(title = "Salary Distribution by Major Category", 
+       x = "Category", y = "Median Salary ($)")
+```
+```{r}
+simple_model <- lm(Median ~ ShareWomen, data = college_major_data)
+summary(simple_model)
+```
+
+
+```{r}
+multiple_model <- lm(Median ~ ShareWomen + Unemployment_rate + factor(Major_category), 
+                     data = college_major_data)
+summary(multiple_model)
+```
+
+```{r}
+#Stepwise Model Selection
+model_empty <- lm(Median ~ 1, data = college_major_data)
+model_stepwise <- step(model_empty, direction = "both", 
+                       scope = ~ ShareWomen + Unemployment_rate + Major_category + Total)
+```
+
+```{r}
+#Model Assumptions
+plot(model_stepwise, which = 1, col = "blue") 
+plot(model_stepwise, which = 2, col = "green")
+plot(model_stepwise, which = 4, col = "red")
+```
+
+```{r}
+#Colinearity
+vif(model_stepwise)
+```
+
+```{r}
+#Nested Model Comparison
+anova(simple_model, model_stepwise)
+```
+
+
